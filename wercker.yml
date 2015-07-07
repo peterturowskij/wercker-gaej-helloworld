@@ -28,12 +28,13 @@ build:
     - script:
         name: prepare token store
         code: |
-          mkdir -p $WERCKER_CACHE_DIR/oauth
+          mkdir -p $WERCKER_SOURCE_DIR/oauth
           echo $APP_ENGINE_TOKEN > $WERCKER_SOURCE_DIR/oauth/.appcfg_oauth2_tokens_java
           cat $WERCKER_SOURCE_DIR/oauth/.appcfg_oauth2_tokens_java          
     # A step that executes `gradle build` command
     - script:
         name: run gradle
         code: |
+          cat $WERCKER_SOURCE_DIR/oauth/.appcfg_oauth2_tokens_java
           ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR appengineVersion
           ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR -Duser.home=$WERCKER_SOURCE_DIR/oauth appengineUpdate
