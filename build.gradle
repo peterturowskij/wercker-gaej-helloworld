@@ -1,0 +1,67 @@
+// Currently, the appengine gradle plugin's appengine devappserver launch doesn't interact well with Intellij/AndroidStudio's
+// Gradle integration.  As a temporary solution, please launch from the command line.
+// ./gradlew modulename:appengineRun
+// If you would like more information on the gradle-appengine-plugin please refer to the github page
+// https://github.com/GoogleCloudPlatform/gradle-appengine-plugin
+
+buildscript {
+    dependencies {
+        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.20'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'appengine'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+dependencies {
+    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.20'
+    compile 'com.google.appengine:appengine-endpoints:1.9.20'
+    compile 'com.google.appengine:appengine-endpoints-deps:1.9.20'
+    compile 'com.google.appengine:appengine-api-labs:1.9.20'
+    compile("com.googlecode.objectify:objectify:4.0b1") {
+        exclude group: 'com.google.gwt', module: 'gwt-user'
+        exclude group: 'com.google.appengine'
+        exclude group: 'joda-time'
+        exclude group: 'org.joda'
+    }
+    compile 'javax.servlet:servlet-api:2.5'
+
+    testCompile 'com.google.appengine:appengine-api-labs:1.9.20'
+    testCompile 'com.google.appengine:appengine-api-stubs:1.9.20'
+    testCompile 'com.google.appengine:appengine-testing:1.9.20'
+    testCompile 'junit:junit:4.12'
+}
+
+sourceSets {
+    main {
+        output.classesDir = "${buildDir}/WEB-INF/classes"
+    }
+
+    test {
+        output.classesDir = "${buildDir}/WEB-INF/classes"
+    }
+}
+webAppDirName = "src/main/webapp"
+
+war {
+    webInf { from 'src/main/resources' } // adds a file-set to the WEB-INF dir.
+}
+
+appengine {
+    downloadSdk = true
+    daemon = false
+    appcfg {
+        oauth2 = true
+        noCookies = false
+        email = "${appEmail}"
+        host = "0.0.0.0"
+    }
+    
+    jvmFlags = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000']
+    httpPort = 9999
+    httpAddress = "0.0.0.0"
+}

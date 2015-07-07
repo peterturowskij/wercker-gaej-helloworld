@@ -1,0 +1,14 @@
+
+gradle.allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+        jcenter()
+        mavenCentral()
+    }
+    buildscript {
+        repositories {
+            jcenter()
+            mavenCentral()
+        }
+    }
+}
