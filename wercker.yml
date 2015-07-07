@@ -37,4 +37,4 @@ build:
         code: |
           cat $WERCKER_SOURCE_DIR/oauth/.appcfg_oauth2_tokens_java
           ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR appengineVersion
-          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR -Duser.home=$WERCKER_SOURCE_DIR/oauth appengineUpdate
+          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR -Duser.name=$APP_ENGINE_USER_NAME -Duser.home=$WERCKER_SOURCE_DIR/oauth appengineUpdate
