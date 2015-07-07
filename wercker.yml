@@ -3,18 +3,6 @@
 # Read more about containers on our dev center
 # http://devcenter.wercker.com/docs/containers/index.html
 box: sleshchenko/java-7
-# You can also use services such as databases. Read more on our dev center:
-# http://devcenter.wercker.com/docs/services/index.html
-# services:
-    # - postgres
-    # http://devcenter.wercker.com/docs/services/postgresql.html
-
-    # - mongodb
-    # http://devcenter.wercker.com/docs/services/mongodb.html
-
-# This is the build pipeline. Pipelines are the core of wercker
-# Read more about pipelines on our dev center
-# http://devcenter.wercker.com/docs/pipelines/index.html
 build:
     # Steps make up the actions in your pipeline
     # Read more about steps on our dev center:
@@ -24,17 +12,21 @@ build:
         name: show base information
         code: |
           ./gradlew -v
-          ./gradlew tasks
+    - script:
+        name: run unit test
+        code: |
+          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR appengineVersion
+          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR build
+          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR appengineFunctionalTest
+deploy:
+  steps:
     - script:
         name: prepare token store
         code: |
           mkdir -p $WERCKER_SOURCE_DIR/oauth
           echo $APP_ENGINE_TOKEN > $WERCKER_SOURCE_DIR/oauth/.appcfg_oauth2_tokens_java
-          cat $WERCKER_SOURCE_DIR/oauth/.appcfg_oauth2_tokens_java          
-    # A step that executes `gradle build` command
-    - script:
-        name: run gradle
-        code: |
           cat $WERCKER_SOURCE_DIR/oauth/.appcfg_oauth2_tokens_java
-          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR appengineVersion
+    - script:
+        name: deploy
+        code: |
           ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR -Duser.name=$APP_ENGINE_USER_NAME -Duser.home=$WERCKER_SOURCE_DIR/oauth appengineUpdate
