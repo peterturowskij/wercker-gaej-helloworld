@@ -24,8 +24,10 @@ build:
         name: show base information
         code: |
           ./gradlew -v
+          ./gradlew tasks
     # A step that executes `gradle build` command
     - script:
         name: run gradle
         code: |
-          ./gradlew --full-stacktrace -q --project-cache-dir=$WERCKER_CACHE_DIR appengineExplodeApp          
+          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR appengineVersion
+          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR appengineExplodeApp
