@@ -1,16 +1,35 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+<?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+	<!-- guice -->
+	<filter>
+		<filter-name>com.google.inject.servlet.GuiceFilter</filter-name>
+		<filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>com.google.inject.servlet.GuiceFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
-  	<servlet>
-		<servlet-name>HelloWorldEndpoint</servlet-name>
-		<servlet-class>com.helloworld.api.HelloWorldEndpoint</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>HelloWorldEndpoint</servlet-name>
-		<url-pattern>/v1/helloworld</url-pattern>
-	</servlet-mapping>
+    <!-- PipeLine Handler -->
+    <servlet>
+        <servlet-name>PipelineServlet</servlet-name>
+        <servlet-class>com.google.appengine.tools.pipeline.impl.servlets.PipelineServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PipelineServlet</servlet-name>
+        <url-pattern>/_ah/pipeline/*</url-pattern>
+    </servlet-mapping>
 
+	<!-- guice listener -->
+	<listener>
+		<listener-class>com.gaebler.rest.config.ApplicationConfigListener</listener-class>
+	</listener>
+
+    <context-param>
+        <param-name>application-module-provider</param-name>
+        <param-value>com.mopunch.publish.config.ApplicationModuleProvider</param-value>
+    </context-param>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
 </web-app>
